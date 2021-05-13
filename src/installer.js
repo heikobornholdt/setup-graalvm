@@ -7,6 +7,7 @@ import { join, normalize, } from 'path';
 
 const IS_WINDOWS = process.platform === 'win32';
 const PLATFORM   = IS_WINDOWS ? 'windows' : process.platform === 'darwin' ? 'darwin' : 'linux';
+const ARCH       = process.arch === 'arm64' ? 'aarch64' : 'amd64' ;
 const TOOL_NAME  = 'GraalVM';
 
 const OPTIONS = {
@@ -34,6 +35,7 @@ export const getGraalVM = async (javaVersion, graalvmVersion, options = {}) => {
         const compressedFileExtension = IS_WINDOWS ? '.zip' : '.tar.gz';
         const downloadUrl             = `https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-${graalvmVersion}/graalvm-ce-${version}${compressedFileExtension}`;
 
+        info(process.arch);
         info(`Downloading ${TOOL_NAME} from ${downloadUrl}`);
 
         const graalvmFile = await downloadTool(downloadUrl);
@@ -64,7 +66,7 @@ export const getNativeImage = async () => {
 };
 
 const getVersion = (javaVersion, graalvmVersion) => {
-    return `java${javaVersion}-${PLATFORM}-amd64-${graalvmVersion}`;
+    return `java${javaVersion}-${PLATFORM}-${ARCH}-${graalvmVersion}`;
 };
 
 const decompressDownload = async (compressedFile, compressedFileExtension, destinationDir) => {
